@@ -73,7 +73,7 @@ int main( int argc, const char**argv)
 	out_dir = vm["destination"].as<std::string>();
 	vertex_file_name = in_dir + input_file_name + "-adjlist.part";
 
-	mem_size = (unsigned long long)(vm["memory"].as<int>())*1024l*1024l;
+	mem_size = vm["memory"].as<unsigned long long>()*1024l*1024l;
     buffer = process_in_edge(mem_size, input_file_name.c_str(), out_dir.c_str());
 
 	std::cout << "Input file: " << input_file_name << "\n";

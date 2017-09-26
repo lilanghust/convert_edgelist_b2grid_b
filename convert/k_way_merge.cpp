@@ -559,7 +559,24 @@ u64_t do_src_merge(char *tmp_out_dir, char *origin_edge_file)
     k_merger.merge();
     //lilang test
     //std::cout << prev_name_tmp_file << std::endl;
-    
+
+    //remove tmp files
+    char tmp[1024];
+    for (unsigned int i = 0; i < num_tmp_files; i++)
+    {
+        std::stringstream delete_current_file_id;
+        delete_current_file_id << i;
+        std::string delete_current_file_name 
+            = std::string(prev_name_tmp_file) + delete_current_file_id.str();
+
+        std::cout << "delete tmp file "  << delete_current_file_name << std::endl;
+        //char tmp[1024];
+        sprintf(tmp,"rm -rf %s", delete_current_file_name.c_str());
+        int ret = system(tmp);
+        if (ret < 0)
+            assert(false);
+    }
+
     return sink->tmp_num_edges - sink->del_num_edges;
 }
 

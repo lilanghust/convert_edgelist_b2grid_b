@@ -23,5 +23,5 @@ filename=${graph##*/}
 ./generate.sh $1-00 $2 $3 $4
 ./generate.sh $1-11 $2 $3 $4
 
-#remap the vertices
-#sudo ./bin/convert -t edgelist -g $graph -d $dir -m $memory
+#remap grid-01 && grid-10
+sudo ./bin/convert -t remap -g $1 -d $3 -m $4

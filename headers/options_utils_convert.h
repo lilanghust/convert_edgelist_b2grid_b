@@ -25,7 +25,7 @@ static void setup_options_convert(int argc, const char* argv[])
 	( "type,t", boost::program_options::value<std::string>()->required(), "Type of the snap file(edgelist, edgelist_map or remap, ignore adjlist)")
 	( "graph,g", boost::program_options::value<std::string>()->required(), "Name of the graph in snap format")
 	( "destination,d",  boost::program_options::value<std::string>()->required(), "Destination folder that will contain the index and edge file")
-	( "memory,m",  boost::program_options::value<int>(), "How much memory can be used(MB)");
+	( "memory,m",  boost::program_options::value<unsigned long long>(), "How much memory can be used(MB)");
   try {
     boost::program_options::store(boost::program_options::parse_command_line(argc,
 									     argv,

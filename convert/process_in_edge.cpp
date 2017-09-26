@@ -350,10 +350,7 @@ u64_t wake_up_sort_src(u32_t file_id, u64_t buf_size, bool final_call)
         for (u32_t j = 0; j <= file_id; j++)
             std::cout << "the size of tmp file[" <<j << "] is:" <<  file_len[j] << std::endl;
         std::string prev_tmp(tmp_out_dir) ;
-        std::string tmp_out(tmp_out_dir) ;
         prev_tmp += origin_edge_file;
-        tmp_out += origin_edge_file;
-        in_name_file = tmp_out.c_str();
         prev_tmp += "-tmp-file-";
         prev_name_tmp_file = prev_tmp.c_str();
 

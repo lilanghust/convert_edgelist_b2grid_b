@@ -192,6 +192,14 @@ void process_edgelist( const char* input_file_name,
 
     //finished processing
     close( in );
+    //remvoe undirected edgelist
+    std::cout << "delete undirected edgelist " << tmp_file << std::endl;
+    char tmp[1024];
+    sprintf(tmp, "rm -rf %s", tmp_file.c_str());
+    int ret = system(tmp);
+    if(ret<0)
+        assert(false);
+
     fclose( edge_file );
 }
 
