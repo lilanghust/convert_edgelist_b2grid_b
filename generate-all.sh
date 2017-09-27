@@ -24,4 +24,13 @@ filename=${graph##*/}
 ./generate.sh $1-11 $2 $3 $4
 
 #remap grid-01 && grid-10
-sudo ./bin/convert -t remap -g $1 -d $3 -m $4
+./bin/convert -t remap -g $1 -d $3 -m $4
+
+#get degree info for grid-01 and grid-10(do not need mmap)
+./bin/convert -t statistics -g $1 -d $3 -m 1024
+
+#get degree info for grid-00-01 and grid-00-10(do not need mmap)
+./bin/convert -t statistics -g $1-00 -d $3 -m 1024
+
+#get degree info for grid-11-01 and grid-11-10(do not need mmap)
+./bin/convert -t statistics -g $1-11 -d $3 -m 1024

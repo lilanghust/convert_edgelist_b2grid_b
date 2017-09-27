@@ -116,6 +116,15 @@ int main( int argc, const char**argv)
 				out_dir.c_str(), 
                 input_file_name.c_str());
     }
+    else if (snap_type == "statistics")
+    {
+        read_desc(in_dir + input_file_name + ".desc");
+        //std::cout << "edgelist_map: " << vertex_file_name << std::endl;
+		statistics( input_graph_name.c_str(), 
+				vertex_file_name.c_str(),
+				out_dir.c_str(), 
+                input_file_name.c_str());
+    }
 	else{
 		std::cout << "input parameter (type) error!\n";
 		exit( -1 );

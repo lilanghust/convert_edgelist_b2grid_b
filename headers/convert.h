@@ -76,6 +76,13 @@ namespace convert
         unsigned int old_id;
         unsigned int new_id;
     }__attribute__((aligned(4)));
+
+    struct degree_info
+    {
+        unsigned int in_deg;
+        unsigned int out_deg;
+        degree_info(unsigned int _in_deg, unsigned int _out_deg):in_deg(_in_deg), out_deg(_out_deg){}
+    }__attribute__((aligned(4)));
 }
 
 char *get_adjline();
@@ -89,6 +96,8 @@ bool comp_old_id(const struct convert::vertex_map &, const struct convert::verte
 void edgelist_map(const char*, const char *, const char *, const char *, const char *);
 void remap_one_file(int, int, unsigned long long);
 void remap(const char*, const char *, const char *, const char *);
+void statistics_one_file(int);
+void statistics(const char*, const char *, const char *, const char *);
 void radix_sort(struct convert::tmp_in_edge * , struct convert::tmp_in_edge * , unsigned long long, unsigned int, bool);
 char *process_in_edge(unsigned long long, const char *, const char *);
 void insert_sort_for_buf(unsigned int, unsigned int);

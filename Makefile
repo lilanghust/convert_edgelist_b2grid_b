@@ -5,14 +5,15 @@ HEADERS_PATH = headers
 
 #compile/link options
 #SYSLIBS = -L/usr/local/lib -L/usr/lib64  -lboost_system -lboost_program_options -lboost_thread -lz -lrt -lboost_thread-mt
-SYSLIBS = -L/usr/local/lib -L/usr/lib  -lboost_system -lboost_program_options -lboost_thread -lz -lrt -lm -lpthread
+SYSLIBS = -L/usr/local/lib -L/usr/lib -lz -lrt -lm -lpthread
+BOOST_SYSLIBS = -L$(BOOST_LIB)  -lboost_system -lboost_program_options -lboost_thread
 CXX?= g++
 #CXXFLAGS?= -O3 -DNDEBUG -Wall -Wno-unused-function -I./$(HEADERS_PATH)
-CXXFLAGS?= -O3 -DDEBUG -Wall -Wno-unused-function -I./$(HEADERS_PATH)
+CXXFLAGS?= -O3 -DDEBUG -Wall -Wno-unused-function -I$(BOOST_INCLUDE) -I./$(HEADERS_PATH)
 CXXFLAGS+= -Wfatal-errors
 
 # make selections
-CONVERT_SRC = convert.o process_edgelist.o process_adjlist.o edgelist_map.o radix_sort.o process_in_edge.o k_way_merge.o remap.o
+CONVERT_SRC = convert.o process_edgelist.o process_adjlist.o edgelist_map.o radix_sort.o process_in_edge.o k_way_merge.o remap.o statistics.o
 CONVERT_OBJS= $(addprefix $(OBJECT_DIR)/, $(CONVERT_SRC))
 CONVERT_TARGET=$(BINARY_DIR)/convert
 
@@ -45,6 +46,9 @@ $(OBJECT_DIR)/edgelist_map.o:convert/edgelist_map.cpp
 $(OBJECT_DIR)/remap.o:convert/remap.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
+$(OBJECT_DIR)/statistics.o:convert/statistics.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
 $(OBJECT_DIR)/process_in_edge.o:convert/process_in_edge.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
@@ -52,7 +56,7 @@ $(OBJECT_DIR)/k_way_merge.o:convert/k_way_merge.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 $(BINARY_DIR)/convert: $(CONVERT_OBJS)
-	$(CXX) -o $@ $(CONVERT_OBJS) $(SYSLIBS)
+	$(CXX) -o $@ $(CONVERT_OBJS) -I$(BOOST_INCLUDE) $(BOOST_SYSLIBS) $(SYSLIBS)
 
 $(CONVERT_OBJS): |$(OBJECT_DIR)
 $(CONVERT_TARGET): |$(BINARY_DIR)

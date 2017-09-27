@@ -26,9 +26,7 @@
 using namespace convert;
 using namespace std;
 
-#define LINE_FORMAT		"%u\t%u\n"
 #define LINE_FORMAT_VERTEX		"%u\t%u\t%u\n"
-#define LINE_FORMAT_PARTITION "%u\n"
 
 unsigned long long edge_size;
 static FILE * in_vertex;
