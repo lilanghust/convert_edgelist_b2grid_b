@@ -71,12 +71,12 @@ void edgelist_map( const char* input_graph_name,
     //generate the grid files
     std::ostringstream file_name;
     //do not need dual buffer, so mutiply 2
-    int partition_size = each_buf_size * 2 / partition / partition;
-    int ** size = new int*[partition];
+    long long partition_size = each_buf_size * 2 / partition / partition;
+    long long ** size = new long long*[partition];
     struct tmp_in_edge *** grid_buf = new struct tmp_in_edge **[partition];
     int ** grid_file = new int*[partition];
     for(int i=0;i<partition;++i){
-        size[i] = new int[partition];
+        size[i] = new long long[partition];
         grid_buf[i] = new struct tmp_in_edge *[partition];
         grid_file[i] = new int[partition];
         for(int j=0;j<partition;++j){

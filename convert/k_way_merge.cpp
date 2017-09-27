@@ -171,7 +171,7 @@ struct merge_source
     void read_data(/*int f,*/ tmp_in_edge* tbuf, u64_t nbytes, u64_t off )
     {
         char * buf = (char*)tbuf;
-        int read_finished = 0, remain = nbytes, res;
+        u64_t read_finished = 0, remain = nbytes, res;
         //printf("buf address : %llx\n", (u64_t)buf);
         //printf("end buf address : %llx\n", (u64_t)((char*)buf1+mem_size));
         int fd = open(file_name.c_str(), O_RDWR, S_IRUSR | S_IRGRP | S_IROTH);
@@ -186,7 +186,7 @@ struct merge_source
             exit(-1);
         }
 
-        while(read_finished < (int)nbytes)
+        while(read_finished < nbytes)
         {
             //hejian debug
             //std::cout << "nbytes = " << nbytes << std::endl;
@@ -208,7 +208,7 @@ struct merge_source
             //std::cout<<"nread: "<<read_finished <<" nbytes: "<<nbytes<<std::endl;
         }
         //std::cout<<"read_data ok"<<std::endl;
-        assert(read_finished <= (int)nbytes);
+        assert(read_finished <= nbytes);
         close(fd);
     }
 
@@ -435,7 +435,7 @@ struct src_merge_sink
         if (buf_index == (each_buf_size - 1))
         {
             tmp_in_edge *p = buf2; 
-            for(unsigned int i = 0;i < each_buf_size; ++i, ++p){
+            for(u64_t i = 0;i < each_buf_size; ++i, ++p){
                 if( buffer_offset > 0 && i == 0 
                         && (*p).dst_vert == prev_last_dest_vert && (*p).src_vert == prev_last_src_vert )
                 {
@@ -459,7 +459,7 @@ struct src_merge_sink
     void finish()
     {
         tmp_in_edge *p = buf2; 
-        for(unsigned int i = 0;i < buf_index+1; ++i, ++p){
+        for(u64_t i = 0;i < buf_index+1; ++i, ++p){
             if( buffer_offset > 0 && i == 0 
                     && (*p).dst_vert == prev_last_dest_vert && (*p).src_vert == prev_last_src_vert )
             {

@@ -313,10 +313,10 @@ u64_t wake_up_sort_src(u32_t file_id, u64_t buf_size, bool final_call)
     }
     printf("final_call is %d,file_id is %d\n",final_call,file_id);
     if (final_call && file_id == 0){
-        unsigned int del_num_edges = 0;
+        unsigned long long del_num_edges = 0;
         tmp_in_edge *p_last = buf1; 
         tmp_in_edge *p = buf1 + 1; 
-        for(unsigned int i = 1;i < buf_size; ++i, ++p){
+        for(u64_t i = 1;i < buf_size; ++i, ++p){
             //delete the replications
             if( p->dst_vert == p_last->dst_vert && p->src_vert == p_last->src_vert ){
                 ++del_num_edges;

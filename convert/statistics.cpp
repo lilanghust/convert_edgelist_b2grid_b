@@ -69,7 +69,7 @@ void statistics( const char* input_graph_name,
     
     //output
     for(iter=map_info.begin();iter!=map_info.end();++iter){
-        fprintf(output_info_file, "%u, %u, %u\n", iter->first, iter->second.in_deg, iter->second.out_deg);
+        fprintf(output_info_file, "%u %u %u\n", iter->first, iter->second.in_deg, iter->second.out_deg);
     }
     fclose(output_info_file);
 }

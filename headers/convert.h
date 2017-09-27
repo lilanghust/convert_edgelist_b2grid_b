@@ -86,7 +86,7 @@ namespace convert
 }
 
 char *get_adjline();
-int flush_buffer_to_file( int fd, char* buffer, unsigned int size );
+unsigned long long flush_buffer_to_file( int fd, char* buffer, unsigned long long size );
 void read_desc(std::string path);
 void write_desc(std::string path);
 void process_adjlist(const char*, const char *, const char *);

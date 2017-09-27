@@ -210,9 +210,9 @@ void process_edgelist( const char* input_file_name,
  * on success, will return the number of bytes that are actually 
  * written.
  */
-int flush_buffer_to_file( int fd, char* buffer, unsigned int size )
+unsigned long long flush_buffer_to_file( int fd, char* buffer, unsigned long long size )
 {
-    unsigned int n, offset, remaining, res;
+    unsigned long long n, offset, remaining, res;
     n = offset = 0;
     remaining = size;
     while(n<size){
