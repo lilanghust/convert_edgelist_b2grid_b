@@ -403,6 +403,7 @@ struct src_merge_sink
     u64_t buf_index;
     u64_t tmp_num_edges;
     u64_t del_num_edges;
+    u64_t tmp_del_num_edges;
     u32_t buffer_offset;
     u32_t prev_last_src_vert;
     u32_t prev_last_dest_vert;
@@ -420,6 +421,7 @@ struct src_merge_sink
 
         tmp_num_edges = 0;
         del_num_edges = 0;
+        tmp_del_num_edges = 0;
         buf_index = 0;
         buffer_offset = 0;
         prev_last_src_vert = -1;
@@ -439,16 +441,20 @@ struct src_merge_sink
                 if( buffer_offset > 0 && i == 0 
                         && (*p).dst_vert == prev_last_dest_vert && (*p).src_vert == prev_last_src_vert )
                 {
-                    ++del_num_edges;
+                    ++tmp_del_num_edges;
                     continue;
                 }
                 if( i > 0 && (*p).dst_vert == (*(p-1)).dst_vert && (*p).src_vert == (*(p-1)).src_vert )
                 {
-                    ++del_num_edges;
+                    ++tmp_del_num_edges;
                     continue;
                 }
-                flush_buffer_to_file(src_temp_file, (char *)p, sizeof(tmp_in_edge));
             }
+            flush_buffer_to_file(src_temp_file, (char *)buf1, 
+                    sizeof(tmp_in_edge) * (buf_index + 1 - tmp_del_num_edges));
+
+            del_num_edges += tmp_del_num_edges;
+            tmp_del_num_edges = 0;
             prev_last_src_vert = (*(p-1)).src_vert;
             prev_last_dest_vert = (*(p-1)).dst_vert;
             memset( (char*)buf2, 0, each_buf_size*sizeof(struct tmp_in_edge) );
@@ -463,16 +469,18 @@ struct src_merge_sink
             if( buffer_offset > 0 && i == 0 
                     && (*p).dst_vert == prev_last_dest_vert && (*p).src_vert == prev_last_src_vert )
             {
-                ++del_num_edges;
+                ++tmp_del_num_edges;
                 continue;
             }
             if( i > 0 && (*p).dst_vert == (*(p-1)).dst_vert && (*p).src_vert == (*(p-1)).src_vert )
             {
-                ++del_num_edges;
+                ++tmp_del_num_edges;
                 continue;
             }
-            flush_buffer_to_file(src_temp_file, (char *)p, sizeof(tmp_in_edge));
         }
+        flush_buffer_to_file(src_temp_file, (char *)buf1, 
+                sizeof(tmp_in_edge) * (buf_index + 1 - tmp_del_num_edges));
+        del_num_edges += tmp_del_num_edges;
         close(src_temp_file);
     }
 };

@@ -13,7 +13,7 @@ CXXFLAGS?= -O3 -DDEBUG -Wall -Wno-unused-function -I$(BOOST_INCLUDE) -I./$(HEADE
 CXXFLAGS+= -Wfatal-errors
 
 # make selections
-CONVERT_SRC = convert.o process_edgelist.o process_adjlist.o edgelist_map.o radix_sort.o process_in_edge.o k_way_merge.o remap.o statistics.o
+CONVERT_SRC = convert.o process_edgelist.o process_adjlist.o edgelist_map.o process_in_edge.o k_way_merge.o remap.o statistics.o
 CONVERT_OBJS= $(addprefix $(OBJECT_DIR)/, $(CONVERT_SRC))
 CONVERT_TARGET=$(BINARY_DIR)/convert
 
@@ -29,9 +29,6 @@ $(BINARY_DIR):
 
 #following lines defined for convert
 $(OBJECT_DIR)/convert.o:convert/convert.cpp 
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
-$(OBJECT_DIR)/radix_sort.o:convert/radix_sort.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 $(OBJECT_DIR)/process_edgelist.o:convert/process_edgelist.cpp 

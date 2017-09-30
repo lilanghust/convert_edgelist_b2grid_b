@@ -115,7 +115,7 @@ void process_adjlist(const char * input_file_name,
                 {
                     //call function to sort and write back
                     std::cout << "copy " << current_buf_size << " edges to radix sort process." << std::endl;
-                    wake_up_sort(file_id, current_buf_size, false);
+                    wake_up_sort_src(file_id, current_buf_size, false);
                     current_buf_size = 0;
                     file_id++;
                 }
@@ -161,7 +161,7 @@ void process_adjlist(const char * input_file_name,
     if (current_buf_size)
     {
         std::cout << "copy " << current_buf_size << " edges to radix sort process." << std::endl;
-        wake_up_sort(file_id, current_buf_size, true);
+        wake_up_sort_src(file_id, current_buf_size, true);
         current_buf_size = 0;
     }
 

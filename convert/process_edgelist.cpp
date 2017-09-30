@@ -109,7 +109,7 @@ void process_edgelist( const char* input_file_name,
             (*(buf1 + current_buf_size)).dst_vert = (buffer+i)->src_vert + 1 - min_vertex_id;
             ++current_buf_size;
 
-            if (current_buf_size == each_buf_size)
+            if (current_buf_size == whole_buf_size)
             {
                 //call function to sort and write back
                 std::cout << "copy " << current_buf_size << " edges to radix sort process." << std::endl;
