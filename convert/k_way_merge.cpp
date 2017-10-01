@@ -405,8 +405,8 @@ struct src_merge_sink
     u64_t del_num_edges;
     u64_t tmp_del_num_edges;
     u32_t buffer_offset;
-    u32_t prev_last_src_vert;
-    u32_t prev_last_dest_vert;
+    tmp_in_edge * p_last;
+    tmp_in_edge * last_one;
     src_merge_sink(std::string file_name)
     {
         /*open the new sorted temp file*/
@@ -424,8 +424,7 @@ struct src_merge_sink
         tmp_del_num_edges = 0;
         buf_index = 0;
         buffer_offset = 0;
-        prev_last_src_vert = -1;
-        prev_last_dest_vert = -1;
+        last_one = new tmp_in_edge(-1, -1);
     }
     void Add(tmp_in_edge value)
     {
@@ -436,49 +435,61 @@ struct src_merge_sink
         /*write back if necessary*/
         if (buf_index == (each_buf_size - 1))
         {
+            p_last = buf2;
             tmp_in_edge *p = buf2; 
-            for(u64_t i = 0;i < each_buf_size; ++i, ++p){
-                if( buffer_offset > 0 && i == 0 
-                        && (*p).dst_vert == prev_last_dest_vert && (*p).src_vert == prev_last_src_vert )
-                {
+            u64_t i = 0;
+            if(buffer_offset > 0){
+                while( *p == *last_one ){
+                    ++i;
+                    ++p;
                     ++tmp_del_num_edges;
-                    continue;
                 }
-                if( i > 0 && (*p).dst_vert == (*(p-1)).dst_vert && (*p).src_vert == (*(p-1)).src_vert )
-                {
-                    ++tmp_del_num_edges;
-                    continue;
-                }
+                *p_last = *p;
             }
-            flush_buffer_to_file(src_temp_file, (char *)buf1, 
+            for(++i, ++p;i < each_buf_size; ++i, ++p){
+                if( *p == *p_last )
+                {
+                    ++tmp_del_num_edges;
+                    continue;
+                }
+                ++p_last;
+                *p_last = *p;
+            }
+            std::cout << buf_index << "\tdel\t" << tmp_del_num_edges << std::endl;
+            flush_buffer_to_file(src_temp_file, (char *)buf2, 
                     sizeof(tmp_in_edge) * (buf_index + 1 - tmp_del_num_edges));
 
             del_num_edges += tmp_del_num_edges;
-            tmp_del_num_edges = 0;
-            prev_last_src_vert = (*(p-1)).src_vert;
-            prev_last_dest_vert = (*(p-1)).dst_vert;
-            memset( (char*)buf2, 0, each_buf_size*sizeof(struct tmp_in_edge) );
+            *last_one = *(p-1);
             buffer_offset += 1;
             buf_index = 0;
+            tmp_del_num_edges = 0;
         }
     }
     void finish()
     {
+        p_last = buf2;
         tmp_in_edge *p = buf2; 
-        for(u64_t i = 0;i < buf_index+1; ++i, ++p){
-            if( buffer_offset > 0 && i == 0 
-                    && (*p).dst_vert == prev_last_dest_vert && (*p).src_vert == prev_last_src_vert )
-            {
+        u64_t i = 0;
+        if(buffer_offset > 0){
+            while( *p == *last_one ){
+                ++i;
+                ++p;
                 ++tmp_del_num_edges;
-                continue;
             }
-            if( i > 0 && (*p).dst_vert == (*(p-1)).dst_vert && (*p).src_vert == (*(p-1)).src_vert )
-            {
-                ++tmp_del_num_edges;
-                continue;
-            }
+            *p_last = *p;
         }
-        flush_buffer_to_file(src_temp_file, (char *)buf1, 
+        for(++i, ++p;i < buf_index + 1; ++i, ++p){
+            if( *p == *p_last )
+            {
+                ++tmp_del_num_edges;
+                continue;
+            }
+            ++p_last;
+            *p_last = *p;
+        }
+
+        flush_buffer_to_file(src_temp_file, (char *)buf2, 
                 sizeof(tmp_in_edge) * (buf_index + 1 - tmp_del_num_edges));
         del_num_edges += tmp_del_num_edges;
         close(src_temp_file);
@@ -585,6 +596,7 @@ u64_t do_src_merge(char *tmp_out_dir, char *origin_edge_file)
             assert(false);
     }
 
+    std::cout << sink->tmp_num_edges << "\tedges\t" << sink->del_num_edges << std::endl;
     return sink->tmp_num_edges - sink->del_num_edges;
 }
 

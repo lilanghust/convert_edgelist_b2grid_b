@@ -112,7 +112,7 @@ void process_edgelist( const char* input_file_name,
             if (current_buf_size == whole_buf_size)
             {
                 //call function to sort and write back
-                std::cout << "copy " << current_buf_size << " edges to radix sort process." << std::endl;
+                std::cout << "copy " << current_buf_size << " edges to sort..." << std::endl;
                 wake_up_sort_src(file_id, current_buf_size, false);
                 current_buf_size = 0;
                 file_id++;
@@ -122,7 +122,7 @@ void process_edgelist( const char* input_file_name,
     //if current_buf_size == 0, we don't take into into consideration
     if (current_buf_size)
     {
-        std::cout << "copy " << current_buf_size << " edges to radix sort process" << std::endl;
+        std::cout << "copy " << current_buf_size << " edges to sort..." << std::endl;
         num_edges_adjlist = wake_up_sort_src(file_id, current_buf_size, true);
         current_buf_size = 0;
     }
@@ -144,7 +144,6 @@ void process_edgelist( const char* input_file_name,
     //write the first line
     fprintf(edge_file, "%u %llu\n", max_vertex_id-min_vertex_id+1, num_edges_adjlist/2);
     unsigned int recent_src_vert=UINT_MAX;
-    //unsigned long long num_edges=0;
     unsigned long long edge_suffix = 0;
     unsigned long long prev_out = 1;
     unsigned long long index;

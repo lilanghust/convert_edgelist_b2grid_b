@@ -63,8 +63,12 @@ namespace convert
     {
         unsigned int src_vert;
         unsigned int dst_vert;
+        tmp_in_edge(unsigned int _src_vert, unsigned int _dst_vert):src_vert(_src_vert),dst_vert(_dst_vert){}
         bool operator<(const tmp_in_edge &p) const{
             return src_vert < p.src_vert || (src_vert == p.src_vert && dst_vert < p.dst_vert);
+        }
+        bool operator==(const tmp_in_edge &p) const{
+            return src_vert == p.src_vert && dst_vert == p.dst_vert;
         }
     }__attribute__((aligned(8)));
 

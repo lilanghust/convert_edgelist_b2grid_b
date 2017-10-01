@@ -153,7 +153,7 @@ char* process_in_edge(u64_t mem_size,
 
     num_parts = 0;
     each_buf_len = mem_size/2;
-    whole_buf_size = mem_size;
+    whole_buf_size = (u64_t)mem_size/(sizeof(struct tmp_in_edge));
     each_buf_size = (u64_t)mem_size/(sizeof(struct tmp_in_edge)*2);
     current_buf_size = 0;
     current_file_id = 0;
@@ -195,7 +195,7 @@ u64_t wake_up_sort_src(u32_t file_id, u64_t buf_size, bool final_call)
         tmp_in_edge *p = buf1 + 1; 
         for(u64_t i = 1;i < buf_size; ++i, ++p){
             //delete the replications
-            if( p->dst_vert == p_last->dst_vert && p->src_vert == p_last->src_vert ){
+            if( *p == *p_last){
                 ++del_num_edges;
                 continue;
             }
@@ -205,6 +205,7 @@ u64_t wake_up_sort_src(u32_t file_id, u64_t buf_size, bool final_call)
         flush_buffer_to_file(tmp_in_file, (char *)buf1, sizeof(tmp_in_edge) * (buf_size - del_num_edges));
         close(tmp_in_file);
         printf("file_id=%d\n",file_id);
+        std::cout << "buf_size: " << buf_size << "\tdel: " << del_num_edges << std::endl;
         return buf_size - del_num_edges; 
     }
     else{
@@ -221,7 +222,7 @@ u64_t wake_up_sort_src(u32_t file_id, u64_t buf_size, bool final_call)
             if (i == file_id)
                 file_len[i] = buf_size*sizeof(tmp_in_edge);
             else
-                file_len[i] = each_buf_len;
+                file_len[i] = whole_buf_size*sizeof(tmp_in_edge);//std::sort is used to sort the whole buffer
         }
 
         for (u32_t j = 0; j <= file_id; j++)
