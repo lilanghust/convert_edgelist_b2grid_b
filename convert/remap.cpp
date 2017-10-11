@@ -42,6 +42,8 @@ void remap( const char* input_graph_name,
 {
     cout << "Start Processing " << input_graph_name << "\nWill generate the grid files in destination folder.\n";
 
+    unsigned int *first_vtx_map;
+
     //open the input file
     file_name.str("");
     file_name << input_graph_name << "-01";
@@ -60,11 +62,24 @@ void remap( const char* input_graph_name,
 
     //mmap the vertex map file
     //do not need dual buffer, so mutiply 2
-    edge_size = each_buf_len * 2 - sizeof(unsigned int) * (max_vertex_id +1);
+    edge_size = each_buf_len * 2 - 2 * sizeof(unsigned int) * (max_vertex_id +1);
     if(edge_size <= 0){
         cout << "Memory is not enough!\n";
         exit(1);
     }
+    //init the first vertex map
+    first_vtx_map = (unsigned int *)((char *)buf1 + edge_size + sizeof(unsigned int) * (max_vertex_id+1));
+    file_name.str("");
+    file_name << input_graph_name << "-vertex-map";
+    in_vertex = fopen( file_name.str().c_str(), "r" );
+    if( in_vertex == NULL ){
+        cout << "Cannot open the vertex file!\n";
+        exit(1);
+    }
+    init_global_vertex_map(0, first_vtx_map);
+    fclose(in_vertex);
+
+    //init the second vertex map
     vtx_map = (unsigned int *)((char *)buf1 + edge_size);
     file_name.str("");
     file_name << input_graph_name << "-00-vertex-map";
@@ -73,7 +88,8 @@ void remap( const char* input_graph_name,
         cout << "Cannot open the vertex file!\n";
         exit(1);
     }
-    init_global_vertex_map();
+    unsigned long long line_num = init_global_vertex_map(0, vtx_map);
+    fclose(in_vertex);
     file_name.str("");
     file_name << input_graph_name << "-11-vertex-map";
     in_vertex = fopen( file_name.str().c_str(), "r" );
@@ -81,13 +97,26 @@ void remap( const char* input_graph_name,
         cout << "Cannot open the vertex file!\n";
         exit(1);
     }
-    init_global_vertex_map();
+    init_global_vertex_map(line_num, vtx_map);
+    fclose(in_vertex);
+
+    //get the final vertex_map
+    for(unsigned int i=0;i<=max_vertex_id;++i){
+        first_vtx_map[i] = vtx_map[first_vtx_map[i]];
+    }
+    file_name.str("");
+    file_name << out_dir << '/' << input_file_name << "-final-vtx-map";
+    printf("generate the final vertex map file: %s\n", file_name.str().c_str());
+    int final_vtx_map_file = open(file_name.str().c_str(), O_WRONLY|O_CREAT, 00666);
+    flush_buffer_to_file(final_vtx_map_file, (char *)first_vtx_map, sizeof(unsigned int) * (max_vertex_id + 1));
+    close(final_vtx_map_file);
 
     //generate the remap files
     //process file-01
     unsigned long long partition_size = edge_size / sizeof(struct tmp_in_edge);
     file_name.str("");
     file_name << out_dir << '/' << input_file_name << "-01-01";
+    printf("generate the remap file: %s\n", file_name.str().c_str());
     int output_edge_file = open(file_name.str().c_str(), O_WRONLY|O_CREAT, 00666);
     remap_one_file(input_edge_file01, output_edge_file, partition_size);
     close(input_edge_file01);
@@ -97,6 +126,7 @@ void remap( const char* input_graph_name,
     file_name.str("");
     file_name << out_dir << '/' << input_file_name << "-10-10";
     output_edge_file = open(file_name.str().c_str(), O_WRONLY|O_CREAT, 00666);
+    printf("generate the remap file: %s\n", file_name.str().c_str());
     remap_one_file(input_edge_file10, output_edge_file, partition_size);
     close(input_edge_file10);
     close(output_edge_file);
@@ -130,9 +160,8 @@ void remap_one_file(int input_edge_file, int output_edge_file, unsigned long lon
         flush_buffer_to_file(output_edge_file, (char *)buf1, sizeof(tmp_in_edge) * size);
 }
 
-void init_global_vertex_map()
+unsigned long long init_global_vertex_map(unsigned long long line_num, unsigned int *vtx_map)
 {
-    static unsigned long long line_num=0;
     unsigned int temp1, temp2;
     char line_buffer[MAX_LINE_LEN];
     while(true)
@@ -140,8 +169,9 @@ void init_global_vertex_map()
         char* res;
 
         if(( res = fgets( line_buffer, MAX_LINE_LEN, in_vertex )) == NULL )
-            return;
+            break;
         sscanf( line_buffer, LINE_FORMAT_VERTEX, &temp1, &temp2, vtx_map + line_num);
         ++line_num;
     }
+    return line_num;
 }

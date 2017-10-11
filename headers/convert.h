@@ -112,7 +112,7 @@ void do_merge();
 unsigned long long do_src_merge(char *, char *);
 int read_one_edge( void );
 void init_vertex_map( struct convert::vertex_map* );
-void init_global_vertex_map();
+unsigned long long init_global_vertex_map(unsigned long long, unsigned int *);
 float produce_random_weight();
 void *map_anon_memory( unsigned long long size, bool mlocked,bool zero = false );
 

@@ -81,10 +81,10 @@ void process_edgelist( const char* input_file_name,
         if(bytes==0) break;
         //trace the vertex ids
         for(int i=0;i<count;++i){
-            if( (buffer+i)->src_vert + 1 < min_vertex_id ) min_vertex_id = (buffer+i)->src_vert;
-            if( (buffer+i)->dst_vert + 1 < min_vertex_id ) min_vertex_id = (buffer+i)->dst_vert;
-            if( (buffer+i)->src_vert + 1 > max_vertex_id ) max_vertex_id = (buffer+i)->src_vert;
-            if( (buffer+i)->dst_vert + 1 > max_vertex_id ) max_vertex_id = (buffer+i)->dst_vert;
+            if( (buffer+i)->src_vert < min_vertex_id ) min_vertex_id = (buffer+i)->src_vert;
+            if( (buffer+i)->dst_vert < min_vertex_id ) min_vertex_id = (buffer+i)->dst_vert;
+            if( (buffer+i)->src_vert > max_vertex_id ) max_vertex_id = (buffer+i)->src_vert;
+            if( (buffer+i)->dst_vert > max_vertex_id ) max_vertex_id = (buffer+i)->dst_vert;
         }
     }
 

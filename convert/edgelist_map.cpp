@@ -59,6 +59,18 @@ void edgelist_map( const char* input_graph_name,
 
     //sort the vtx_map by the first column(partition_id)
     std::sort(vtx_map, vtx_map + max_vertex_id + 1, comp_partition_id);
+    //get each partition's vertex size
+    unsigned int count = 0;
+    unsigned int key = vtx_map[0].partition_id;
+    for(unsigned int i=0;i<=max_vertex_id;++i)
+        if(vtx_map[i].partition_id == key)
+            ++count;
+        else{
+            printf("partition %u : vertex size %u\n", key, count);
+            count = 1;
+            key = vtx_map[i].partition_id;
+        }
+    printf("partition %u : vertex size %u\n", key, count);
     int partition = vtx_map[max_vertex_id].partition_id + 1;
 
     //assign new_id by the order

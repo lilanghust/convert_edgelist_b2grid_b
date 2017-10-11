@@ -20,12 +20,12 @@ memory=$4
 filename=${graph##*/}
 
 #generate the adjacency list for gpmetis
-sudo ./bin/convert -t edgelist -g $graph -d $dir -m $memory
+./bin/convert -t edgelist -g $graph -d $dir -m $memory
 
 #partition the graph into $2 partitions
 gpmetis $dir/$filename'-adjlist' $part > $dir/$filename'-output.info'
 mv $dir/$filename'-adjlist.part.'$part $dir/$filename'-adjlist.part'
 
 #generate 2*2 matrix according to the result of gpmetis
-sudo ./bin/convert -t edgelist_map -g $graph -d $dir -m $memory
+./bin/convert -t edgelist_map -g $graph -d $dir -m $memory
 
