@@ -71,7 +71,7 @@ void edgelist_map( const char* input_graph_name,
             key = vtx_map[i].partition_id;
         }
     printf("partition %u : vertex size %u\n", key, count);
-    int partition = vtx_map[max_vertex_id].partition_id + 1;
+    //int partition = vtx_map[max_vertex_id].partition_id + 1;
 
     //assign new_id by the order
     for(unsigned int i=0;i<=max_vertex_id;++i)
@@ -79,10 +79,11 @@ void edgelist_map( const char* input_graph_name,
 
     //sort the vtx_map by the second column(old_id)
     std::sort(vtx_map, vtx_map + max_vertex_id + 1, comp_old_id);
-    
+
     //generate the grid files
     std::ostringstream file_name;
     //do not need dual buffer, so mutiply 2
+/*    
     long long partition_size = each_buf_size * 2 / partition / partition;
     long long ** size = new long long*[partition];
     struct tmp_in_edge *** grid_buf = new struct tmp_in_edge **[partition];
@@ -99,16 +100,22 @@ void edgelist_map( const char* input_graph_name,
             grid_file[i][j] = open(file_name.str().c_str(), O_WRONLY|O_CREAT, 00666);
         }
     }
-
+*/
 
     file_name.str("");
     file_name << out_dir << '/' << input_file_name << "-vertex-map";
-    FILE *vertex_map_file = fopen( file_name.str().c_str(), "w+" );
-    if( NULL == vertex_map_file){
+    int vertex_map_file = open( file_name.str().c_str(), O_WRONLY|O_CREAT, 00666 );
+    if( -1 == vertex_map_file){
         cout << "Cannot create vertex_map_file:" << file_name.str().c_str() << "\nAborted..\n";
         exit( -1 );
     }
 
+    //write back the vertex map file
+    for(unsigned int i=0;i<=max_vertex_id;++i)
+        flush_buffer_to_file(vertex_map_file, (char *)&(vtx_map[i].new_id), sizeof(int));
+    close(vertex_map_file);
+
+/*
     cout << "generating grid...\n";
     //init 
     lseek( in , 0 , SEEK_SET );	
@@ -145,11 +152,6 @@ void edgelist_map( const char* input_graph_name,
         }
     }
 
-    //write back the vertex map file
-    for(unsigned int i=0;i<=max_vertex_id;++i)
-        fprintf(vertex_map_file, LINE_FORMAT_VERTEX, vtx_map[i].partition_id, vtx_map[i].old_id, vtx_map[i].new_id);
-    fclose(vertex_map_file);
-
     //finished processing
     close( in );
     
@@ -158,6 +160,7 @@ void edgelist_map( const char* input_graph_name,
         for(int j=0;j<partition;++j)
             close(grid_file[i][j]);
     }
+*/
 }
 
 bool comp_partition_id(const struct vertex_map &v1, const struct vertex_map &v2){

@@ -113,7 +113,7 @@ void remap( const char* input_graph_name,
 
     //generate the remap files
     //process file-01
-    unsigned long long partition_size = edge_size / sizeof(struct tmp_in_edge);
+    /*unsigned long long partition_size = edge_size / sizeof(struct tmp_in_edge);
     file_name.str("");
     file_name << out_dir << '/' << input_file_name << "-01-01";
     printf("generate the remap file: %s\n", file_name.str().c_str());
@@ -129,7 +129,7 @@ void remap( const char* input_graph_name,
     printf("generate the remap file: %s\n", file_name.str().c_str());
     remap_one_file(input_edge_file10, output_edge_file, partition_size);
     close(input_edge_file10);
-    close(output_edge_file);
+    close(output_edge_file);*/
 }
 
 void remap_one_file(int input_edge_file, int output_edge_file, unsigned long long partition_size){
